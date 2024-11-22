@@ -1,4 +1,6 @@
 streamlit
-easyocr
-opencv-python-headless
 numpy
+opencv-python
+pillow
+tensorflow
+keras
