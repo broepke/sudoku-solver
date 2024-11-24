@@ -7,6 +7,7 @@ import tensorflow as tf
 from tensorflow import keras
 import os
 
+
 def order_points(pts):
     """Order points in the order: top-left, top-right, bottom-right, bottom-left."""
     rect = np.zeros((4, 2), dtype="float32")
@@ -19,6 +20,7 @@ def order_points(pts):
     rect[3] = pts[np.argmax(diff)]  # Bottom-left point has the largest difference
     return rect
 
+
 def preprocess_image(image):
     """Preprocess the image for better grid detection."""
     # Convert to grayscale
@@ -30,6 +32,7 @@ def preprocess_image(image):
         gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 11, 2
     )
     return processed
+
 
 def extract_sudoku_grid(image):
     """Extract the Sudoku grid from the processed image."""
@@ -50,15 +53,18 @@ def extract_sudoku_grid(image):
         points = order_points(points)
         # Define the target square size
         side = max(
-            np.linalg.norm(points[0] - points[1]),
-            np.linalg.norm(points[2] - points[3])
+            np.linalg.norm(points[0] - points[1]), np.linalg.norm(points[2] - points[3])
         )
-        target = np.array([[0, 0], [side - 1, 0], [side - 1, side - 1], [0, side - 1]], dtype="float32")
+        target = np.array(
+            [[0, 0], [side - 1, 0], [side - 1, side - 1], [0, side - 1]],
+            dtype="float32",
+        )
         transform_matrix = cv2.getPerspectiveTransform(points, target)
         grid = cv2.warpPerspective(image, transform_matrix, (int(side), int(side)))
         return grid
     else:
         return None
+
 
 def remove_grid_lines(image):
     """Remove grid lines from the Sudoku grid image using combined methods."""
@@ -76,9 +82,13 @@ def remove_grid_lines(image):
     vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 40))
 
     # Detect horizontal lines
-    horizontal_lines = cv2.morphologyEx(binary, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
+    horizontal_lines = cv2.morphologyEx(
+        binary, cv2.MORPH_OPEN, horizontal_kernel, iterations=2
+    )
     # Detect vertical lines
-    vertical_lines = cv2.morphologyEx(binary, cv2.MORPH_OPEN, vertical_kernel, iterations=2)
+    vertical_lines = cv2.morphologyEx(
+        binary, cv2.MORPH_OPEN, vertical_kernel, iterations=2
+    )
 
     # Combine detected lines
     grid_lines = cv2.add(horizontal_lines, vertical_lines)
@@ -91,6 +101,7 @@ def remove_grid_lines(image):
     image_without_grid = cv2.inpaint(gray, grid_lines, 5, cv2.INPAINT_TELEA)
 
     return image_without_grid
+
 
 def extract_numbers_from_grid(grid, mnist_model):
     """Use CNN model to extract numbers from the Sudoku grid."""
@@ -128,9 +139,14 @@ def extract_numbers_from_grid(grid, mnist_model):
 
             # Display the cell image and prediction for debugging
             cell_display = cell.reshape(28, 28)
-            st.image(cell_display, caption=f"Cell ({row+1},{col+1}) Prediction: '{digit}', Confidence: {confidence:.2f}", width=100)
+            st.image(
+                cell_display,
+                caption=f"Cell ({row+1},{col+1}) Prediction: '{digit}', Confidence: {confidence:.2f}",
+                width=100,
+            )
 
     return sudoku_grid
+
 
 def is_valid(board, row, col, num):
     """Check if a number can be placed in a specific position."""
@@ -140,10 +156,14 @@ def is_valid(board, row, col, num):
         return False
     subgrid_row_start = (row // 3) * 3
     subgrid_col_start = (col // 3) * 3
-    subgrid = board[subgrid_row_start:subgrid_row_start + 3, subgrid_col_start:subgrid_col_start + 3]
+    subgrid = board[
+        subgrid_row_start : subgrid_row_start + 3,
+        subgrid_col_start : subgrid_col_start + 3,
+    ]
     if num in subgrid:
         return False
     return True
+
 
 def solve_sudoku(board):
     """Solve the Sudoku board using backtracking."""
@@ -159,12 +179,17 @@ def solve_sudoku(board):
                 return False
     return True
 
+
 def main():
     st.title("Sudoku Solver with Image Upload")
-    st.write("Upload a Sudoku puzzle image to populate the grid automatically, or fill it manually.")
+    st.write(
+        "Upload a Sudoku puzzle image to populate the grid automatically, or fill it manually."
+    )
 
     # File upload for Sudoku image
-    uploaded_file = st.file_uploader("Upload an image of a Sudoku puzzle:", type=["png", "jpg", "jpeg"])
+    uploaded_file = st.file_uploader(
+        "Upload an image of a Sudoku puzzle:", type=["png", "jpg", "jpeg"]
+    )
 
     grid = np.zeros((9, 9), dtype=int)
 
@@ -176,19 +201,25 @@ def main():
         # Load and preprocess the image
         image = cv2.imread(temp_file_path)
         preprocessed_image = preprocess_image(image)
-        st.image(preprocessed_image, caption="Preprocessed Image", use_column_width=True)
+        st.image(
+            preprocessed_image, caption="Preprocessed Image", use_column_width=True
+        )
 
         # Extract Sudoku grid
         sudoku_grid_image = extract_sudoku_grid(preprocessed_image)
 
         if sudoku_grid_image is not None:
-            st.image(sudoku_grid_image, caption="Detected Sudoku Grid", use_column_width=True)
+            st.image(
+                sudoku_grid_image, caption="Detected Sudoku Grid", use_column_width=True
+            )
 
             # Load the CNN model
-            if os.path.exists('mnist_cnn.h5'):
-                mnist_model = keras.models.load_model('mnist_cnn.h5')
+            if os.path.exists("mnist_cnn.h5"):
+                mnist_model = keras.models.load_model("mnist_cnn.h5")
             else:
-                st.error("CNN model not found. Please ensure 'mnist_cnn.h5' is in the same directory.")
+                st.error(
+                    "CNN model not found. Please ensure 'mnist_cnn.h5' is in the same directory."
+                )
                 return
 
             grid = extract_numbers_from_grid(sudoku_grid_image, mnist_model=mnist_model)
@@ -202,7 +233,13 @@ def main():
     for i in range(9):
         cols = st.columns(9)
         for j, col in enumerate(cols):
-            grid[i, j] = col.number_input(f"Cell ({i+1},{j+1})", min_value=0, max_value=9, value=int(grid[i, j]), key=f"cell_{i}_{j}")
+            grid[i, j] = col.number_input(
+                f"Cell ({i+1},{j+1})",
+                min_value=0,
+                max_value=9,
+                value=int(grid[i, j]),
+                key=f"cell_{i}_{j}",
+            )
 
     if st.button("Solve"):
         original_grid = grid.copy()
@@ -214,6 +251,7 @@ def main():
 
         st.write("### Original Puzzle:")
         st.write(original_grid)
+
 
 if __name__ == "__main__":
     main()
