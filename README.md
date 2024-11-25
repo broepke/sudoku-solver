@@ -39,21 +39,12 @@ pip install --upgrade pip
 pip install -r requirements.txt --upgrade
 ```
 
-
 ### 2. Install Tesseract OCR
 ```
 brew install tesseract
 ```
 
-### 3. Run the Application
-
-1.	Start the Streamlit app:
-
-```
-streamlit run sudoku_solver.py
-```
-
-### Optional: Docker Deployment
+## Optional: Docker Deployment
 
 You can also use Docker to run the application with Tesseract pre-installed. A Dockerfile is provided in the repository.
 
@@ -64,7 +55,19 @@ docker build -t sudoku-solver .
 docker run -p 8501:8501 sudoku-solver
 ```
 
-### Example Usage
+## Optional: Streamlit Community Cloud
+
+You can also us the Streamlit Community Cloud.  The `packages.txt` file contains the necessary Linux dependencies to but able to support the OCR Package.
+
+## Run the Application
+
+1.	Start the Streamlit app:
+
+```
+streamlit run sudoku_solver.py
+```
+
+## Example Usage
 
 1.	Upload Image:
    - Drag and drop a clear Sudoku puzzle image.
