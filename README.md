@@ -9,7 +9,7 @@ This project is a Sudoku solver application built using Streamlit and Tesseract 
 - Option to manually adjust extracted numbers.
 - Built with Streamlit for an interactive user interface.
 
-![Sudoku Grid](soduku_easy.png) 
+![Sudoku Grid](sudoku_easy.png) 
 
 ## Installation Instructions
 
