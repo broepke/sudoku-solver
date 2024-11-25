@@ -93,6 +93,23 @@ def solve_sudoku(board):
     return True
 
 
+def display_grid_with_colors(grid, title="Sudoku Grid"):
+    """Display the Sudoku grid with background colors for non-empty cells."""
+    st.write(f"### {title}")
+    grid_html = "<table style='border-collapse: collapse;'>"
+
+    for row in grid:
+        grid_html += "<tr>"
+        for cell in row:
+            # Add background color for non-empty cells
+            color = "#ADD8E6" if cell != 0 else "#FFFFFF"
+            grid_html += f"<td style='border: 1px solid black; width: 30px; height: 30px; text-align: center; background-color: {color};'>{cell if cell != 0 else ''}</td>"
+        grid_html += "</tr>"
+
+    grid_html += "</table>"
+    st.markdown(grid_html, unsafe_allow_html=True)
+
+
 def main():
     st.title("Sudoku Solver with OCR")
     st.write(
@@ -122,8 +139,7 @@ def main():
 
         # Extract Sudoku grid cells and recognize digits
         sudoku_grid = extract_sudoku_grid_cells(preprocessed_image)
-        st.write("### Extracted Sudoku Grid:")
-        st.write(sudoku_grid)
+        display_grid_with_colors(sudoku_grid, title="Extracted Sudoku Grid")
 
         # Allow manual correction of extracted grid
         st.write("### You can also fill the grid manually:")
@@ -140,8 +156,7 @@ def main():
 
     if st.button("Solve"):
         if solve_sudoku(grid):
-            st.write("### Solved Sudoku:")
-            st.write(grid)
+            display_grid_with_colors(grid, title="Solved Sudoku Grid")
         else:
             st.error("No solution exists for the given Sudoku puzzle.")
 
