@@ -13,4 +13,4 @@ COPY . /app
 WORKDIR /app
 
 # Run the Streamlit app
-CMD ["streamlit", "run", "your_script_name.py"]
+CMD ["streamlit", "run", "Sudoku_Solver.py"]
