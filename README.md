@@ -9,8 +9,6 @@ This project is a Sudoku solver application built using Streamlit and Tesseract 
 - Option to manually adjust extracted numbers.
 - Built with Streamlit for an interactive user interface.
 
----
-
 ## Installation Instructions
 
 Follow these steps to set up the Sudoku Solver on your local machine.
@@ -18,8 +16,6 @@ Follow these steps to set up the Sudoku Solver on your local machine.
 ### Prerequisites
 1. **Python**: Ensure you have Python 3.9+ installed.
 2. **Tesseract OCR**: The application relies on Tesseract for OCR.
-
----
 
 ### 1. Install Python and Required Libraries
 
