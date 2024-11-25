@@ -27,17 +27,18 @@ git clone https://github.com/broepke/sudoku-solver
 cd sudoku-solver
 ```
 
-2.	Create a virtual environment (optional but recommended):
+2.	Run all these commands to crete a virtual environment and install the requirements.
 
 ```
-python3 -m venv venv
+python -m venv venv
+
 source venv/bin/activate
+
+pip install --upgrade pip
+
+pip install -r requirements.txt --upgrade
 ```
 
-3.	Install the required Python packages:
-```
-pip install -r requirements.txt
-```
 
 ### 2. Install Tesseract OCR
 ```
