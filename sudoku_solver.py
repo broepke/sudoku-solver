@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 import cv2
-from PIL import Image
 import pytesseract
 import tempfile
 
@@ -10,25 +9,29 @@ def preprocess_image(image):
     """Preprocess the image for better OCR performance."""
     # Convert to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
+
     # Apply Gaussian Blur
     blurred = cv2.GaussianBlur(gray, (3, 3), 0)
-    
+
     # Apply adaptive thresholding
     thresh = cv2.adaptiveThreshold(
         blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2
     )
-    
+
     # Remove gridlines
     horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (40, 1))
     vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 40))
-    
-    horizontal_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
-    vertical_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, vertical_kernel, iterations=2)
-    
+
+    horizontal_lines = cv2.morphologyEx(
+        thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=2
+    )
+    vertical_lines = cv2.morphologyEx(
+        thresh, cv2.MORPH_OPEN, vertical_kernel, iterations=2
+    )
+
     grid_lines = cv2.add(horizontal_lines, vertical_lines)
     grid_removed = cv2.subtract(thresh, grid_lines)
-    
+
     return grid_removed
 
 
@@ -92,10 +95,14 @@ def solve_sudoku(board):
 
 def main():
     st.title("Sudoku Solver with OCR")
-    st.write("Upload a Sudoku puzzle image to extract the grid automatically, or fill it manually.")
+    st.write(
+        "Upload a Sudoku puzzle image to extract the grid automatically, or fill it manually."
+    )
 
     # File upload for Sudoku image
-    uploaded_file = st.file_uploader("Upload an image of a Sudoku puzzle:", type=["png", "jpg", "jpeg"])
+    uploaded_file = st.file_uploader(
+        "Upload an image of a Sudoku puzzle:", type=["png", "jpg", "jpeg"]
+    )
 
     grid = np.zeros((9, 9), dtype=int)
 
@@ -109,7 +116,9 @@ def main():
         st.image(image, caption="Uploaded Image", use_container_width=True)
 
         preprocessed_image = preprocess_image(image)
-        st.image(preprocessed_image, caption="Preprocessed Image", use_container_width=True)
+        st.image(
+            preprocessed_image, caption="Preprocessed Image", use_container_width=True
+        )
 
         # Extract Sudoku grid cells and recognize digits
         sudoku_grid = extract_sudoku_grid_cells(preprocessed_image)
@@ -130,15 +139,11 @@ def main():
                 )
 
     if st.button("Solve"):
-        original_grid = grid.copy()
         if solve_sudoku(grid):
             st.write("### Solved Sudoku:")
             st.write(grid)
         else:
             st.error("No solution exists for the given Sudoku puzzle.")
-
-        st.write("### Original Puzzle:")
-        st.write(original_grid)
 
 
 if __name__ == "__main__":
