@@ -20,10 +20,10 @@ Follow these steps to set up the Sudoku Solver on your local machine.
 ### 1. Install Python and Required Libraries
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/broepke/sudoku-solver
-   cd sudoku-solver
-   ```
+```
+git clone https://github.com/broepke/sudoku-solver
+cd sudoku-solver
+```
 
 2.	Create a virtual environment (optional but recommended):
 
