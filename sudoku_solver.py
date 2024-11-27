@@ -8,7 +8,8 @@ import logging
 
 # Configure the logger
 logging.basicConfig(
-    format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    level=logging.INFO
 )
 
 # Log the information
@@ -18,7 +19,21 @@ logging.info("Python Version: %s", platform.python_version())
 
 
 def preprocess_image(image):
-    """Preprocess the image for better OCR performance."""
+    """
+    Preprocess the input image for better OCR performance.
+
+    Args:
+        image (numpy.ndarray): Input image in BGR format.
+
+    Returns:
+        numpy.ndarray: Preprocessed binary image with grid lines removed.
+
+    The preprocessing steps include:
+    1. Converting to grayscale
+    2. Applying Gaussian blur
+    3. Applying adaptive thresholding
+    4. Removing horizontal and vertical grid lines
+    """
     # Convert to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -48,7 +63,21 @@ def preprocess_image(image):
 
 
 def extract_sudoku_grid_cells(processed_image):
-    """Extract each cell of the Sudoku grid and recognize the digits using OCR."""
+    """
+    Extract and recognize digits from each cell of the Sudoku grid using OCR.
+
+    Args:
+        processed_image (numpy.ndarray): Preprocessed binary image of the Sudoku grid.
+
+    Returns:
+        numpy.ndarray: 9x9 array containing the recognized digits (0 for empty cells).
+
+    The function:
+    1. Divides the image into 81 cells (9x9 grid)
+    2. Processes each cell individually
+    3. Uses OCR to recognize digits
+    4. Returns the complete Sudoku grid as a numpy array
+    """
     grid_size = processed_image.shape[0]
     cell_size = grid_size // 9  # Each cell is approximately 1/9th of the grid
     sudoku_grid = np.zeros((9, 9), dtype=int)
@@ -76,7 +105,23 @@ def extract_sudoku_grid_cells(processed_image):
 
 
 def is_valid(board, row, col, num):
-    """Check if a number can be placed in a specific position."""
+    """
+    Check if a number can be placed in a specific position on the Sudoku board.
+
+    Args:
+        board (numpy.ndarray): Current state of the Sudoku board.
+        row (int): Row index (0-8).
+        col (int): Column index (0-8).
+        num (int): Number to check (1-9).
+
+    Returns:
+        bool: True if the number can be placed at the specified position, False otherwise.
+
+    Checks three Sudoku rules:
+    1. Number doesn't exist in the same row
+    2. Number doesn't exist in the same column
+    3. Number doesn't exist in the same 3x3 subgrid
+    """
     if num in board[row]:
         return False
     if num in board[:, col]:
@@ -91,7 +136,18 @@ def is_valid(board, row, col, num):
 
 
 def solve_sudoku(board):
-    """Solve the Sudoku board using backtracking."""
+    """
+    Solve the Sudoku puzzle using a backtracking algorithm.
+
+    Args:
+        board (numpy.ndarray): 9x9 Sudoku board with zeros representing empty cells.
+
+    Returns:
+        bool: True if a solution is found, False if no solution exists.
+
+    The function modifies the input board in-place to contain the solution if one exists.
+    Uses a recursive backtracking approach to try different numbers in empty cells.
+    """
     for row in range(9):
         for col in range(9):
             if board[row, col] == 0:
@@ -106,7 +162,18 @@ def solve_sudoku(board):
 
 
 def display_grid_with_colors(grid, title="Sudoku Grid"):
-    """Display the Sudoku grid with background colors for non-empty cells."""
+    """
+    Display the Sudoku grid in the Streamlit app with colored cells.
+
+    Args:
+        grid (numpy.ndarray): 9x9 Sudoku grid to display.
+        title (str, optional): Title to display above the grid. Defaults to "Sudoku Grid".
+
+    The function creates an HTML table with:
+    - Light blue background for non-empty cells
+    - White background for empty cells
+    - Black borders for cell separation
+    """
     st.write(f"### {title}")
     grid_html = "<table style='border-collapse: collapse;'>"
 
@@ -123,6 +190,19 @@ def display_grid_with_colors(grid, title="Sudoku Grid"):
 
 
 def main():
+    """
+    Main function to run the Streamlit Sudoku Solver application.
+
+    This function:
+    1. Creates the web interface using Streamlit
+    2. Handles image upload and processing
+    3. Allows manual grid entry/correction
+    4. Triggers the Sudoku solving process
+    5. Displays results to the user
+
+    The application supports both OCR-based grid extraction from images
+    and manual grid entry.
+    """
     st.title("Sudoku Solver with OCR")
     st.write(
         "Upload a Sudoku puzzle image to extract the grid automatically, or fill it manually."
