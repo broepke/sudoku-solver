@@ -93,7 +93,7 @@ def solve_sudoku(board):
 
 def main():
     st.title("Sudoku Solver with EasyOCR")
-    st.write("Upload a Sudoku puzzle image to extract the grid automatically, or fill it manually.")
+    st.write("This is an alternative OCR engine to the primary page.  This uses EasyOCR but is not as reliable.")
 
     # File upload for Sudoku image
     uploaded_file = st.file_uploader("Upload an image of a Sudoku puzzle:", type=["png", "jpg", "jpeg"])
