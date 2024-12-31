@@ -4,18 +4,18 @@ import cv2
 import pytesseract
 import tempfile
 import platform
-import logging
+# import logging
 
-# Configure the logger
-logging.basicConfig(
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    level=logging.INFO
-)
+# # Configure the logger
+# logging.basicConfig(
+#     format="%(asctime)s - %(levelname)s - %(message)s",
+#     level=logging.INFO
+# )
 
-# Log the information
-logging.info("OpenCV Version: %s", cv2.__version__)
-logging.info("Pytesseract Version: %s", pytesseract.get_tesseract_version())
-logging.info("Python Version: %s", platform.python_version())
+# # Log the information
+# logging.info("OpenCV Version: %s", cv2.__version__)
+# logging.info("Pytesseract Version: %s", pytesseract.get_tesseract_version())
+# logging.info("Python Version: %s", platform.python_version())
 
 
 def preprocess_image(image):
